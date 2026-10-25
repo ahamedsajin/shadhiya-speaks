@@ -1,5 +1,5 @@
 import { json } from "@/lib/api";
-import { isRequestAuthenticated } from "@/lib/auth";
+import { isRequestAuthenticated } from "@/lib/admin-credentials";
 import { MAX_MEDIA_BYTES, insertMedia } from "@/lib/settings-store";
 
 /** Detects the real image type from the file's first bytes rather than trusting the browser. */

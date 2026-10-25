@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { isRequestAuthenticated } from "@/lib/auth";
+import { hasSignedSession } from "@/lib/auth";
 
 const PUBLIC_ADMIN_PATHS = new Set(["/admin/login", "/api/admin/login", "/api/admin/logout"]);
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  if (PUBLIC_ADMIN_PATHS.has(pathname) || (await isRequestAuthenticated(request))) {
+  if (PUBLIC_ADMIN_PATHS.has(pathname) || (await hasSignedSession(request))) {
     return NextResponse.next();
   }
   if (pathname.startsWith("/api/")) {

@@ -41,6 +41,15 @@ alter table contacts add column if not exists status_updated_at timestamptz;
 create index if not exists assessments_status_idx on assessments (status);
 create index if not exists contacts_status_idx on contacts (status);
 
+-- Admin password set from the dashboard (overrides ADMIN_PASSWORD; see lib/admin-credentials.ts).
+create table if not exists admin_credentials (
+  id              int primary key default 1 check (id = 1),
+  password_hash   text not null,
+  env_fingerprint text not null,
+  version         int not null default 1,
+  updated_at      timestamptz not null default now()
+);
+
 create table if not exists site_settings (
   id         int primary key default 1 check (id = 1),
   data       jsonb not null default '{}'::jsonb,

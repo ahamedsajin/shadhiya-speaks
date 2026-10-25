@@ -1,5 +1,5 @@
 import { json } from "@/lib/api";
-import { isRequestAuthenticated } from "@/lib/auth";
+import { isRequestAuthenticated } from "@/lib/admin-credentials";
 import { assessmentsToCsv, contactsToCsv, exportFilename } from "@/lib/export";
 import { parseLeadQuery } from "@/lib/filters";
 import { listAssessments, listContacts } from "@/lib/leads";

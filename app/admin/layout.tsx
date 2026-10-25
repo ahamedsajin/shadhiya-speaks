@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/admin" className="flex items-baseline gap-1.5">
             <span className="font-mono text-xs font-semibold uppercase tracking-[0.28em] text-obsidian">Shadhiya</span>
-            <span className="font-heading text-2xl italic text-emerald">Speaks</span>
+            <span className="font-heading text-xl italic text-emerald sm:text-2xl">Speaks</span>
             <span className="ml-2 hidden rounded-full bg-emerald/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-emerald sm:inline">
               Admin
             </span>

@@ -7,7 +7,7 @@ The app runs on Vercel or Netlify with no code changes. Both need a Postgres dat
 | `DATABASE_URL` | Neon **pooled** connection string. Vercel's Neon integration sets this for you. |
 | `NETLIFY_DATABASE_URL` | Set automatically by Netlify DB; used when `DATABASE_URL` is absent. |
 | `ADMIN_EMAIL` | The email you'll sign in to `/admin` with. |
-| `ADMIN_PASSWORD` | A strong password. |
+| `ADMIN_PASSWORD` | The starting password. After signing in you can change it in **Admin → Account**. |
 | `AUTH_SECRET` | 32+ random characters. Generate one with `openssl rand -base64 32`. |
 | `NEXT_PUBLIC_SITE_URL` | Optional. Your final domain, e.g. `https://shadhiyaspeaks.com`, used in `sitemap.xml`. |
 
@@ -47,4 +47,6 @@ First push the project to a GitHub (or GitLab/Bitbucket) repository.
 - **Forms show "Could not submit":** the database variable is missing or wrong. Check `DATABASE_URL` / `NETLIFY_DATABASE_URL` and the function logs.
 - **Dashboard says "Couldn't load leads":** same cause as above.
 - **Image upload fails with "larger than 4 MB":** Vercel limits uploads to about 4.5 MB per request. Photos are shrunk automatically, so this only happens with very large SVG/GIF files; export a smaller file.
-- **Changing the admin password:** update `ADMIN_PASSWORD` and redeploy. To sign everyone out immediately, also change `AUTH_SECRET`.
+- **Changing the admin password:** use **Admin → Account**. It signs out other devices straight away.
+- **Forgot the admin password:** set a new `ADMIN_PASSWORD` in Vercel/Netlify and redeploy. It replaces the password set in the dashboard, and you can sign in with it immediately.
+- **Sign everyone out:** change `AUTH_SECRET` and redeploy.

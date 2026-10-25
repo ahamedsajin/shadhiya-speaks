@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { json, readJson } from "@/lib/api";
-import { isRequestAuthenticated } from "@/lib/auth";
+import { isRequestAuthenticated } from "@/lib/admin-credentials";
 import { LEAD_STATUSES } from "@/lib/labels";
 import { deleteLeads, updateLeads } from "@/lib/leads";
 

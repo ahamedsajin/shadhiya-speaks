@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { json, readJson } from "@/lib/api";
-import { isRequestAuthenticated } from "@/lib/auth";
+import { isRequestAuthenticated } from "@/lib/admin-credentials";
 import { settingsSchema } from "@/lib/settings";
 import { saveSiteSettings } from "@/lib/settings-store";
 

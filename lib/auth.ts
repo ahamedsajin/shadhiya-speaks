@@ -1,4 +1,3 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import { SignJWT, jwtVerify } from "jose";
 
 export const SESSION_COOKIE = "ss_admin";
@@ -16,27 +15,13 @@ export function getAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig 
   return { email, password, secret: new TextEncoder().encode(secret) };
 }
 
-function sameValue(a: string, b: string): boolean {
-  const ha = createHash("sha256").update(a).digest();
-  const hb = createHash("sha256").update(b).digest();
-  return timingSafeEqual(ha, hb);
-}
-
-export function checkCredentials(
-  email: string,
-  password: string,
-  env: NodeJS.ProcessEnv = process.env,
-): "ok" | "invalid" | "unconfigured" {
-  const config = getAuthConfig(env);
-  if (!config) return "unconfigured";
-  const emailOk = sameValue(email.trim().toLowerCase(), config.email.toLowerCase());
-  const passwordOk = sameValue(password, config.password);
-  return emailOk && passwordOk ? "ok" : "invalid";
-}
-
-export async function createSessionToken(secret: Uint8Array, now: Date = new Date()): Promise<string> {
+/**
+ * Signs a session. `version` identifies the password it was issued for, so changing the
+ * password invalidates every other session.
+ */
+export async function createSessionToken(secret: Uint8Array, version: string, now: Date = new Date()): Promise<string> {
   const iat = Math.floor(now.getTime() / 1000);
-  return new SignJWT({})
+  return new SignJWT({ v: version })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject("admin")
     .setIssuedAt(iat)
@@ -44,13 +29,17 @@ export async function createSessionToken(secret: Uint8Array, now: Date = new Dat
     .sign(secret);
 }
 
-export async function verifySessionToken(token: string | undefined, secret: Uint8Array): Promise<boolean> {
-  if (!token) return false;
+/** Returns the session's password version if the token is genuine and unexpired. */
+export async function readSessionToken(
+  token: string | undefined,
+  secret: Uint8Array,
+): Promise<{ version: string } | null> {
+  if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
-    return payload.sub === "admin";
+    return payload.sub === "admin" && typeof payload.v === "string" ? { version: payload.v } : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -63,13 +52,14 @@ export function readCookie(cookieHeader: string | null, name: string): string | 
   return undefined;
 }
 
-export async function isRequestAuthenticated(
-  request: Request,
-  env: NodeJS.ProcessEnv = process.env,
-): Promise<boolean> {
-  const config = getAuthConfig(env);
+/**
+ * Quick check for the proxy: a correctly signed, unexpired session cookie. Pages and API routes
+ * also confirm the session matches the current password (see `lib/admin-credentials.ts`).
+ */
+export async function hasSignedSession(request: Request): Promise<boolean> {
+  const config = getAuthConfig();
   if (!config) return false;
-  return verifySessionToken(readCookie(request.headers.get("cookie"), SESSION_COOKIE), config.secret);
+  return (await readSessionToken(readCookie(request.headers.get("cookie"), SESSION_COOKIE), config.secret)) !== null;
 }
 
 export function sessionCookieOptions() {
