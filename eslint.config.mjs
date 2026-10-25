@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Extracted original app code, kept only as a porting reference.
+    "docs/**",
   ]),
 ]);
 
