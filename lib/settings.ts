@@ -37,6 +37,8 @@ export type SiteSettings = {
     ielts: ImageSetting;
     coaching: ImageSetting;
   };
+  /** The scrolling credentials strip under the Home page hero. */
+  marquee: string[];
   /** Trainer highlights: Home page section, and "What's covered" on the course pages. */
   highlights: {
     credentials: string[];
@@ -102,6 +104,15 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     ielts: { src: CLASSROOM, alt: "Students collaborating in intensive IELTS preparation" },
     coaching: { src: PORTRAIT_ALT, alt: "Shadhiya in a personalized coaching session" },
   },
+  marquee: [
+    "TESOL UK Certified",
+    "5+ Years UAE IELTS Exam Supervision",
+    "8+ Years Academic Experience",
+    "Band 8.0 Achievers",
+    "Live 1-to-1 & Micro-Batch Classes",
+    "Computer-Based Test Simulation",
+    "Abu Dhabi University Supervision",
+  ],
   highlights: {
     credentials: [
       "UK TESOL-Certified English Language Trainer",
@@ -215,6 +226,7 @@ export const settingsSchema = z.object({
     ielts: image,
     coaching: image,
   }),
+  marquee: z.array(text("Strip item", 60)).min(1, "Add at least one item").max(12, "Use up to 12 items"),
   highlights: z.object({
     credentials: z
       .array(text("Highlight", 120))

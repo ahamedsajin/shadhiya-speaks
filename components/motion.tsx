@@ -62,9 +62,11 @@ export function AnimatedHeading({
 
 /** Endless strip of credentials, paused on hover. */
 export function Marquee({ items }: { items: string[] }) {
+  // Short lists are repeated so one copy of the strip is always wider than the screen.
+  const filled = items.length >= 7 ? items : Array.from({ length: Math.ceil(7 / items.length) }, () => items).flat();
   const strip = (key: string) => (
     <div key={key} className="flex shrink-0 items-center" aria-hidden={key === "b"}>
-      {items.map((item, i) => (
+      {filled.map((item, i) => (
         <span key={i} className="flex items-center">
           <span className="px-6 font-mono text-xs uppercase tracking-[0.22em] text-obsidian/70 sm:text-sm">{item}</span>
           <span className="text-gold">◆</span>

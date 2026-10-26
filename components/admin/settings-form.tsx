@@ -340,6 +340,23 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
       </Section>
 
       <Section
+        title="Credentials strip"
+        description="The scrolling strip under the Home page hero. Items scroll in this order and repeat."
+      >
+        <StringListEditor
+          label="Strip items"
+          hint="Keep each item short, e.g. “TESOL UK Certified”. They're shown in capitals."
+          items={settings.marquee}
+          onChange={(marquee) => setSettings((s) => ({ ...s, marquee }))}
+          max={12}
+          maxLength={60}
+          addLabel="Add item"
+          error={errorFor("marquee")}
+          testId="settings-marquee"
+        />
+      </Section>
+
+      <Section
         title="Trainer highlights"
         description="The “Meet Your Trainer” section on the Home page. Each programme's summary and list also appear as “What's covered” on its course page."
       >

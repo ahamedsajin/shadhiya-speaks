@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Marquee, Reveal } from "@/components/motion";
 import { buttonVariants } from "@/components/ui/button";
-import { CREDENTIALS, TESTIMONIALS } from "@/lib/content";
+import { TESTIMONIALS } from "@/lib/content";
 import { whatsappLink } from "@/lib/settings";
 import { getSiteSettings } from "@/lib/settings-store";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ const REASONS = [
 ];
 
 export default async function HomePage() {
-  const { contact, trainer, images, highlights } = await getSiteSettings();
+  const { contact, trainer, images, highlights, marquee } = await getSiteSettings();
   return (
     <div data-testid="home-page">
       <HomeHero
@@ -46,7 +46,7 @@ export default async function HomePage() {
         image={images.homeHero}
         whatsappHref={whatsappLink(contact.whatsappNumber, contact.whatsappMessage)}
       />
-      <Marquee items={CREDENTIALS} />
+      <Marquee items={marquee} />
 
       <TrainerHighlights highlights={highlights} />
 

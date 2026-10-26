@@ -24,16 +24,6 @@ export const SERVICE_LINKS = [
   { href: "/ielts-preparation", label: "Computer-Based Practice" },
 ];
 
-export const CREDENTIALS = [
-  "TESOL UK Certified",
-  "5+ Years UAE IELTS Exam Supervision",
-  "8+ Years Academic Experience",
-  "Band 8.0 Achievers",
-  "Live 1-to-1 & Micro-Batch Classes",
-  "Computer-Based Test Simulation",
-  "Abu Dhabi University Supervision",
-];
-
 export type Testimonial = {
   name: string;
   course: string;
