@@ -50,3 +50,5 @@ First push the project to a GitHub (or GitLab/Bitbucket) repository.
 - **Changing the admin password:** use **Admin → Account**. It signs out other devices straight away.
 - **Forgot the admin password:** set a new `ADMIN_PASSWORD` in Vercel/Netlify and redeploy. It replaces the password set in the dashboard, and you can sign in with it immediately.
 - **Sign everyone out:** change `AUTH_SECRET` and redeploy.
+- **Vercel says the deployment was blocked because of the commit author:** on the free Hobby plan, Vercel only deploys commits from a *private* repository when they're authored by the Vercel account owner. Make the repository public, deploy from the account of the person who authored the commits, deploy with the Vercel CLI (`vercel --prod`), or use a Pro team with both people as members.
+- **Redeploy without code changes:** push an empty commit (`git commit --allow-empty -m "Redeploy" && git push`), or use **Deployments → ⋯ → Redeploy** in Vercel.
