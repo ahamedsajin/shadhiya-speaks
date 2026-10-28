@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { ImageField } from "@/components/admin/image-field";
-import { FactsEditor, StringListEditor } from "@/components/admin/list-editors";
+import { FactsEditor, LinkListEditor, StringListEditor } from "@/components/admin/list-editors";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label, Textarea } from "@/components/ui/form-controls";
@@ -143,7 +143,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
     }
   }
 
-  const { brand, contact, trainer, images, highlights, about } = settings;
+  const { brand, contact, trainer, images, highlights, about, footer } = settings;
 
   return (
     <div className="space-y-8 pb-28">
@@ -466,6 +466,107 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
             maxLength={40}
           />
         </div>
+      </Section>
+
+      <Section
+        title="Footer"
+        description="Every text in the footer. Contact details, social links and the address come from “Contact details” above."
+      >
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <TextField
+            label="Tagline (optional)"
+            value={footer.tagline}
+            onChange={(v) => set("footer", { tagline: v })}
+            error={errors["footer.tagline"]}
+            hint="The italic line under the logo."
+            maxLength={80}
+            testId="settings-footer-tagline"
+          />
+          <div className="space-y-2">
+            <Label htmlFor="field-footer-description">Description (optional)</Label>
+            <Textarea
+              id="field-footer-description"
+              value={footer.description}
+              maxLength={300}
+              rows={2}
+              onChange={(e) => set("footer", { description: e.target.value })}
+              aria-invalid={errors["footer.description"] ? true : undefined}
+            />
+            <FieldError id="footer-description-error" message={errors["footer.description"]} />
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-medium">Column headings</p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {(
+              [
+                { key: "quickLinks", label: "Links column" },
+                { key: "services", label: "Services column" },
+                { key: "connect", label: "Connect column" },
+                { key: "address", label: "Address" },
+              ] as const
+            ).map(({ key, label }) => (
+              <TextField
+                key={key}
+                label={label}
+                value={footer.headings[key]}
+                onChange={(v) => set("footer", { headings: { ...footer.headings, [key]: v } })}
+                error={errors[`footer.headings.${key}`]}
+                maxLength={30}
+              />
+            ))}
+          </div>
+        </div>
+        <LinkListEditor
+          label={`“${footer.headings.quickLinks || "Quick Links"}” links`}
+          hint="Pick a page from the suggestions or paste a full https:// link. Remove every link to hide the column."
+          links={footer.quickLinks}
+          onChange={(quickLinks) => set("footer", { quickLinks })}
+          max={10}
+          error={errorFor("footer.quickLinks")}
+          testId="settings-footer-quick-links"
+        />
+        <LinkListEditor
+          label={`“${footer.headings.services || "Services"}” links`}
+          links={footer.services}
+          onChange={(services) => set("footer", { services })}
+          max={10}
+          error={errorFor("footer.services")}
+          testId="settings-footer-services"
+        />
+        <div className="space-y-2">
+          <Label htmlFor="field-footer-disclaimer">Disclaimer (optional)</Label>
+          <Textarea
+            id="field-footer-disclaimer"
+            value={footer.disclaimer}
+            maxLength={800}
+            rows={4}
+            onChange={(e) => set("footer", { disclaimer: e.target.value })}
+            aria-invalid={errors["footer.disclaimer"] ? true : undefined}
+            data-testid="settings-footer-disclaimer"
+          />
+          <p className="text-xs text-ink-muted">The small centred text above the copyright line.</p>
+          <FieldError id="footer-disclaimer-error" message={errors["footer.disclaimer"]} />
+        </div>
+        <TextField
+          label="Copyright line"
+          value={footer.copyright}
+          onChange={(v) => set("footer", { copyright: v })}
+          error={errors["footer.copyright"]}
+          hint="Write {year} to show the current year automatically."
+          maxLength={120}
+          testId="settings-footer-copyright"
+        />
+        <LinkListEditor
+          label="Bottom links"
+          hint="e.g. Privacy Policy and Terms of Service. Leave the link empty to show plain text."
+          links={footer.legalLinks}
+          onChange={(legalLinks) => set("footer", { legalLinks })}
+          max={4}
+          linkOptional
+          error={errorFor("footer.legalLinks")}
+          testId="settings-footer-legal"
+        />
       </Section>
 
       <Section title="Photos" description="Upload from your device or paste an image link. Large photos are resized automatically.">

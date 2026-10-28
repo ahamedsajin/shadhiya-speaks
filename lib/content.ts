@@ -8,22 +8,6 @@ export const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-export const FOOTER_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/testimonials", label: "Testimonials" },
-  { href: "/free-assessment", label: "Free Assessment" },
-  { href: "/faq", label: "FAQ & Contact" },
-];
-
-export const SERVICE_LINKS = [
-  { href: "/ielts-preparation", label: "Academic IELTS" },
-  { href: "/ielts-preparation", label: "General IELTS" },
-  { href: "/spoken-english", label: "Spoken English" },
-  { href: "/one-to-one-coaching", label: "1-to-1 Coaching" },
-  { href: "/ielts-preparation", label: "Computer-Based Practice" },
-];
-
 export type Testimonial = {
   name: string;
   course: string;

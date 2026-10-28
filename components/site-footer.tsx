@@ -1,16 +1,62 @@
 import { MapPin } from "lucide-react";
 import Link from "next/link";
+import { Fragment, type ReactNode } from "react";
 import { SOCIAL_ICONS, WhatsAppIcon } from "@/components/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
-import { FOOTER_LINKS, SERVICE_LINKS } from "@/lib/content";
-import { SOCIALS, whatsappLink, type SiteSettings } from "@/lib/settings";
+import { SOCIALS, whatsappLink, type FooterLink, type SiteSettings } from "@/lib/settings";
 
 const slug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 const iconLink =
   "flex h-10 w-10 items-center justify-center rounded-full border border-white/15 transition-colors hover:border-gold-light hover:text-gold-light";
+const heading = "font-mono text-xs uppercase tracking-[0.22em] text-gold-light";
+
+/** Site pages open in place; full https:// links open in a new tab. */
+function FooterAnchor({ link, className, testId }: { link: FooterLink; className: string; testId?: string }) {
+  if (link.href.startsWith("/")) {
+    return (
+      <Link href={link.href} className={className} data-testid={testId}>
+        {link.label}
+      </Link>
+    );
+  }
+  return (
+    <a href={link.href} target="_blank" rel="noreferrer" className={className} data-testid={testId}>
+      {link.label}
+    </a>
+  );
+}
+
+function LinkColumn({ title, links, testPrefix }: { title: string; links: FooterLink[]; testPrefix: string }) {
+  if (links.length === 0) return null;
+  return (
+    <div>
+      <p className={heading}>{title}</p>
+      <ul className="mt-4 space-y-2.5">
+        {links.map((link, i) => (
+          <li key={i}>
+            <FooterAnchor
+              link={link}
+              className="text-sm text-[#A2B3AB] transition-colors hover:text-gold-light"
+              testId={`${testPrefix}${slug(link.label)}-link`}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
-  const { brand, contact } = settings;
+  const { brand, contact, footer } = settings;
+  const copyright = footer.copyright.replaceAll("{year}", String(new Date().getFullYear()));
+  const legal: ReactNode[] = footer.legalLinks.map((link, i) =>
+    link.href ? (
+      <FooterAnchor key={i} link={link} className="transition-colors hover:text-gold-light" />
+    ) : (
+      <span key={i}>{link.label}</span>
+    ),
+  );
+
   return (
     <footer className="bg-obsidian text-[#FDFCFA]" data-testid="site-footer">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -19,48 +65,17 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             <div className="flex items-baseline gap-1.5">
               <BrandLogo brand={brand} variant="footer" />
             </div>
-            <p className="mt-3 font-heading text-lg italic text-[#A2B3AB]">IELTS • English • Confidence</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#A2B3AB]">
-              Online IELTS &amp; English training for ambitious learners in the UAE and beyond.
-            </p>
+            {footer.tagline && <p className="mt-3 font-heading text-lg italic text-[#A2B3AB]">{footer.tagline}</p>}
+            {footer.description && (
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#A2B3AB]">{footer.description}</p>
+            )}
           </div>
 
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-light">Quick Links</p>
-            <ul className="mt-4 space-y-2.5">
-              {FOOTER_LINKS.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[#A2B3AB] transition-colors hover:text-gold-light"
-                    data-testid={`footer-${slug(link.label)}-link`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <LinkColumn title={footer.headings.quickLinks} links={footer.quickLinks} testPrefix="footer-" />
+          <LinkColumn title={footer.headings.services} links={footer.services} testPrefix="footer-service-" />
 
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-light">Services</p>
-            <ul className="mt-4 space-y-2.5">
-              {SERVICE_LINKS.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[#A2B3AB] transition-colors hover:text-gold-light"
-                    data-testid={`footer-service-${slug(link.label)}-link`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-light">Connect</p>
+            <p className={heading}>{footer.headings.connect}</p>
             <div className="mt-4 flex items-center gap-3">
               <a
                 href={whatsappLink(contact.whatsappNumber, contact.whatsappMessage)}
@@ -98,7 +113,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             </a>
             {contact.address && (
               <div className="mt-8" data-testid="footer-address">
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-light">Address</p>
+                <p className={heading}>{footer.headings.address}</p>
                 <address className="mt-4 flex items-start gap-2 text-sm not-italic leading-relaxed text-[#A2B3AB]">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
                   <span className="whitespace-pre-line">{contact.address}</span>
@@ -120,19 +135,23 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="mt-14 border-t border-white/10 pt-8">
-          <p className="mx-auto max-w-3xl text-center text-xs leading-relaxed text-[#A2B3AB]/80">
-            Shadhiya Speaks provides independent language training and test preparation. IELTS is a registered
-            trademark of University of Cambridge ESOL, the British Council, and IDP Education Australia. Shadhiya
-            Speaks is not an official test center or partner. Score improvements depend on individual effort and
-            consistency.
-          </p>
-          <div className="mt-6 flex flex-col items-center justify-between gap-3 text-xs text-[#A2B3AB] sm:flex-row">
-            <p>© 2026 Shadhiya Speaks. All Rights Reserved.</p>
-            <p className="flex gap-4">
-              <span className="cursor-pointer transition-colors hover:text-gold-light">Privacy Policy</span>
-              <span className="text-white/20">|</span>
-              <span className="cursor-pointer transition-colors hover:text-gold-light">Terms of Service</span>
+          {footer.disclaimer && (
+            <p className="mx-auto max-w-3xl whitespace-pre-line text-center text-xs leading-relaxed text-[#A2B3AB]/80">
+              {footer.disclaimer}
             </p>
+          )}
+          <div className="mt-6 flex flex-col items-center justify-between gap-3 text-xs text-[#A2B3AB] sm:flex-row">
+            <p>{copyright}</p>
+            {legal.length > 0 && (
+              <p className="flex gap-4">
+                {legal.map((item, i) => (
+                  <Fragment key={i}>
+                    {i > 0 && <span className="text-white/20">|</span>}
+                    {item}
+                  </Fragment>
+                ))}
+              </p>
+            )}
           </div>
         </div>
       </div>

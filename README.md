@@ -5,7 +5,7 @@ Next.js rebuild of the Shadhiya Speaks IELTS & English training site (originally
 - **Public site:** Home, About, IELTS Courses, Spoken English, 1-to-1 Coaching, Free Assessment, Testimonials, FAQ, Contact. Copy, layout and styling match the original.
 - **Lead forms:** the Free Assessment and Contact forms save to Postgres (`/api/assessments`, `/api/contact`).
 - **Admin → Leads** (`/admin`): both forms' leads with search, date, program and status filters, pagination, and **Export CSV** (exports exactly the filtered rows, including status and notes). Each lead has a status — New, Contacted, Follow up, Converted, Not converted — and private notes. Tick several leads to change their status or delete them in one go; deleting always asks for confirmation and is permanent.
-- **Admin → Site settings** (`/admin/settings`): change the logo, favicon, contact details (WhatsApp, email, social links, and an optional footer address with a map link), the home-page trainer card (name, title, result badge), the scrolling credentials strip under the hero, the trainer highlights (Home page “Meet Your Trainer” section and the “What's covered” lists on the IELTS and Spoken English pages), the About page “At a Glance” cards and photo badge, and every photo. Photos can be uploaded from your device or pasted as a link. Saving updates the live site immediately.
+- **Admin → Site settings** (`/admin/settings`): change the logo, favicon, contact details (WhatsApp, email, social links, and an optional footer address with a map link), the home-page trainer card (name, title, result badge), the scrolling credentials strip under the hero, the trainer highlights (Home page “Meet Your Trainer” section and the “What's covered” lists on the IELTS and Spoken English pages), the About page “At a Glance” cards and photo badge, every footer text (tagline, description, column headings, link lists, disclaimer, copyright and bottom links), and every photo. Photos can be uploaded from your device or pasted as a link. Saving updates the live site immediately.
 - **Admin → Account** (`/admin/account`): change the admin password. It's stored hashed in the database and signs out any other devices. `ADMIN_PASSWORD` is only the starting password; setting a new `ADMIN_PASSWORD` in your hosting settings replaces the dashboard password (use this if you forget it).
 
 ## Run it locally
@@ -29,8 +29,8 @@ Images uploaded in Site settings are stored in the same Postgres database (table
 
 | What | Where |
 | --- | --- |
-| Logo, favicon, contact details, trainer card, credentials strip, trainer highlights, About cards, photos | **Admin → Site settings** (defaults in `lib/settings.ts`) |
-| Nav links, testimonials, FAQs | `lib/content.ts` |
+| Logo, favicon, contact details, trainer card, credentials strip, trainer highlights, About cards, footer, photos | **Admin → Site settings** (defaults in `lib/settings.ts`) |
+| Header nav links, testimonials, FAQs | `lib/content.ts` |
 | Site time zone | `lib/site.ts` |
 | Page copy | `app/(site)/<page>/page.tsx` |
 | Colors and fonts | `app/globals.css`, `app/layout.tsx` |

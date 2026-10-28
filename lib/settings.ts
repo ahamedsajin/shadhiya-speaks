@@ -56,7 +56,23 @@ export type SiteSettings = {
     badgeValue: string;
     badgeLabel: string;
   };
+  footer: {
+    /** Short italic line under the logo. Empty hides it. */
+    tagline: string;
+    description: string;
+    headings: { quickLinks: string; services: string; connect: string; address: string };
+    quickLinks: FooterLink[];
+    services: FooterLink[];
+    disclaimer: string;
+    /** "{year}" is replaced with the current year. */
+    copyright: string;
+    /** Bottom-right links, e.g. Privacy Policy. An empty link shows plain text. */
+    legalLinks: FooterLink[];
+  };
 };
+
+/** `href` is a page on this site ("/about") or a full https:// link. */
+export type FooterLink = { label: string; href: string };
 
 export type ProgramHighlights = { title: string; summary: string; items: string[] };
 
@@ -166,6 +182,32 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     badgeValue: "13+",
     badgeLabel: "Years in education",
   },
+  footer: {
+    tagline: "IELTS • English • Confidence",
+    description: "Online IELTS & English training for ambitious learners in the UAE and beyond.",
+    headings: { quickLinks: "Quick Links", services: "Services", connect: "Connect", address: "Address" },
+    quickLinks: [
+      { label: "Home", href: "/" },
+      { label: "About", href: "/about" },
+      { label: "Testimonials", href: "/testimonials" },
+      { label: "Free Assessment", href: "/free-assessment" },
+      { label: "FAQ & Contact", href: "/faq" },
+    ],
+    services: [
+      { label: "Academic IELTS", href: "/ielts-preparation" },
+      { label: "General IELTS", href: "/ielts-preparation" },
+      { label: "Spoken English", href: "/spoken-english" },
+      { label: "1-to-1 Coaching", href: "/one-to-one-coaching" },
+      { label: "Computer-Based Practice", href: "/ielts-preparation" },
+    ],
+    disclaimer:
+      "Shadhiya Speaks provides independent language training and test preparation. IELTS is a registered trademark of University of Cambridge ESOL, the British Council, and IDP Education Australia. Shadhiya Speaks is not an official test center or partner. Score improvements depend on individual effort and consistency.",
+    copyright: "© {year} Shadhiya Speaks. All Rights Reserved.",
+    legalLinks: [
+      { label: "Privacy Policy", href: "" },
+      { label: "Terms of Service", href: "" },
+    ],
+  },
 };
 
 /** Uploaded files are served from here; the id is a uuid plus an extension. */
@@ -192,6 +234,25 @@ const socialUrl = z
   .trim()
   .max(300, "Link is too long")
   .refine((v) => v === "" || HTTPS_URL.test(v), "Use a full https:// link, or leave it empty to hide the icon");
+
+// A page on this site. "//…" is excluded because browsers treat it as another website.
+const SITE_PATH = /^\/(?!\/)[A-Za-z0-9\-._~/#?=&%]*$/;
+
+/** A footer link: a page on this site ("/about") or an https:// URL. Legal links may leave it empty. */
+const footerLink = (linkRequired: boolean) =>
+  z.object({
+    label: text("Link text", 40),
+    href: z
+      .string()
+      .trim()
+      .max(500, "Link is too long")
+      .refine(
+        (v) => (!linkRequired && v === "") || SITE_PATH.test(v) || HTTPS_URL.test(v),
+        linkRequired
+          ? "Use a page on this site (e.g. /about) or a full https:// link"
+          : "Use a page on this site (e.g. /privacy), a full https:// link, or leave it empty",
+      ),
+  });
 
 const program = z.object({
   title: text("Title", 60),
@@ -254,6 +315,21 @@ export const settingsSchema = z.object({
       .max(6, "Use up to 6 cards"),
     badgeValue: text("Badge value", 20, 0),
     badgeLabel: text("Badge label", 40, 0),
+  }),
+  footer: z.object({
+    tagline: text("Tagline", 80, 0),
+    description: text("Description", 300, 0),
+    headings: z.object({
+      quickLinks: text("Heading", 30),
+      services: text("Heading", 30),
+      connect: text("Heading", 30),
+      address: text("Heading", 30),
+    }),
+    quickLinks: z.array(footerLink(true)).max(10, "Use up to 10 links"),
+    services: z.array(footerLink(true)).max(10, "Use up to 10 links"),
+    disclaimer: text("Disclaimer", 800, 0),
+    copyright: text("Copyright line", 120, 0),
+    legalLinks: z.array(footerLink(false)).max(4, "Use up to 4 links"),
   }),
 });
 

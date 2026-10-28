@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 import { FACT_ICON_OPTIONS } from "@/components/fact-icons";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label } from "@/components/ui/form-controls";
-import { FACT_ICONS, type AboutFact, type FactIcon } from "@/lib/settings";
+import { FACT_ICONS, type AboutFact, type FactIcon, type FooterLink } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
 function move<T>(items: T[], from: number, to: number): T[] {
@@ -213,6 +213,106 @@ export function FactsEditor({
         </Button>
       )}
       <FieldError id="about-facts-error" message={error} />
+    </div>
+  );
+}
+
+/** Pages offered as suggestions when typing a link. */
+const SITE_PAGES = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/ielts-preparation", label: "IELTS Courses" },
+  { href: "/spoken-english", label: "Spoken English" },
+  { href: "/one-to-one-coaching", label: "1-to-1 Coaching" },
+  { href: "/free-assessment", label: "Free Assessment" },
+  { href: "/testimonials", label: "Testimonials" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "Contact" },
+];
+
+/** Edits a list of links: text plus a site page or https:// URL for each. */
+export function LinkListEditor({
+  label,
+  hint,
+  links,
+  onChange,
+  max,
+  linkOptional = false,
+  error,
+  testId,
+}: {
+  label: string;
+  hint?: string;
+  links: FooterLink[];
+  onChange: (links: FooterLink[]) => void;
+  max: number;
+  linkOptional?: boolean;
+  error?: string;
+  testId: string;
+}) {
+  const listId = `${testId}-pages`;
+  const update = (i: number, patch: Partial<FooterLink>) =>
+    onChange(links.map((link, j) => (j === i ? { ...link, ...patch } : link)));
+
+  return (
+    <div className="space-y-3" data-testid={testId}>
+      <div>
+        <Label>{label}</Label>
+        {hint && <p className="mt-1.5 text-xs text-ink-muted">{hint}</p>}
+      </div>
+      <datalist id={listId}>
+        {SITE_PAGES.map((page) => (
+          <option key={page.href} value={page.href}>
+            {page.label}
+          </option>
+        ))}
+      </datalist>
+      <ol className="space-y-2">
+        {links.map((link, i) => (
+          <li key={i} className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <span className="hidden w-5 shrink-0 text-right font-mono text-xs text-ink-muted sm:block">{i + 1}</span>
+            <Input
+              value={link.label}
+              maxLength={40}
+              onChange={(e) => update(i, { label: e.target.value })}
+              placeholder="Link text"
+              aria-label={`${label}: text for link ${i + 1}`}
+              className="h-9 sm:flex-1"
+            />
+            <div className="flex items-center gap-2 sm:flex-1">
+              <Input
+                value={link.href}
+                maxLength={500}
+                list={listId}
+                onChange={(e) => update(i, { href: e.target.value })}
+                placeholder={linkOptional ? "Link (optional): /page or https://…" : "/page or https://…"}
+                aria-label={`${label}: link for link ${i + 1}`}
+                className="h-9"
+              />
+              <RowControls
+                index={i}
+                count={links.length}
+                min={0}
+                label={`link ${i + 1}`}
+                onMove={(to) => onChange(move(links, i, to))}
+                onRemove={() => onChange(links.filter((_, j) => j !== i))}
+              />
+            </div>
+          </li>
+        ))}
+      </ol>
+      {links.length < max && (
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-1.5"
+          onClick={() => onChange([...links, { label: "", href: linkOptional ? "" : "/" }])}
+        >
+          <Plus className="h-4 w-4" />
+          Add link
+        </Button>
+      )}
+      <FieldError id={`${testId}-error`} message={error} />
     </div>
   );
 }
