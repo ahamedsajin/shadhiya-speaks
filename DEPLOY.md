@@ -33,6 +33,16 @@ First push the project to a GitHub (or GitLab/Bitbucket) repository.
 3. Under **Project configuration → Environment variables**, add `ADMIN_EMAIL`, `ADMIN_PASSWORD` and `AUTH_SECRET` (and optionally `NEXT_PUBLIC_SITE_URL`).
 4. Trigger a new deploy.
 
+## Deploying from a fork (someone else's Vercel account)
+
+If the site is hosted from another person's Vercel account, they deploy their own **fork** of this repository:
+
+1. On GitHub, open `shibilion/shadhiya-speaks` → **Fork** → **Create fork**. It has to be a real fork made with this button, not a copy or a Vercel "third-party" import.
+2. In the fork, open the **Actions** tab and click **"I understand my workflows, go ahead and enable them"**. This turns on `.github/workflows/sync-fork.yml`, which pulls in new commits from `shibilion/shadhiya-speaks` every hour. To sync straight away: **Actions → Sync fork → Run workflow**.
+3. In Vercel, import (or connect) the fork, add the environment variables above, and deploy.
+
+Every sync that brings in new commits triggers a new Vercel deploy automatically. You can also click **Sync fork → Update branch** on the fork's GitHub page at any time. If a sync run fails, the comments at the top of the workflow file explain the usual causes and fixes.
+
 ## After deploying, check
 
 1. Submit the Free Assessment form, and you should see "You're booked in."

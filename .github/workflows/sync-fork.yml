@@ -1,0 +1,41 @@
+# Keeps a fork of this repository up to date with shibilion/shadhiya-speaks.
+#
+# It only runs in forks; in the original repository the job is skipped. To use it in a fork:
+#   1. Open the fork's Actions tab and click "I understand my workflows, go ahead and enable them".
+#   2. Optionally run it once now: Actions → "Sync fork" → Run workflow.
+# After that it checks every hour. Each sync that brings in new commits triggers a new Vercel deploy.
+#
+# The fork must be a real GitHub fork (made with the Fork button), not a copy or a Vercel import.
+#
+# If a run fails:
+#   - "diverging changes" / conflict: the fork has commits of its own. On GitHub, open the fork →
+#     Sync fork → Discard commits (or merge them by hand), then it syncs automatically again.
+#   - "workflows permission": the original repository changed a file in .github/workflows, which
+#     the automatic token isn't allowed to copy. Click Sync fork → Update branch on GitHub once.
+# GitHub pauses scheduled workflows after 60 days without activity in the repository; re-enable
+# it from the Actions tab if that happens.
+
+name: Sync fork
+
+on:
+  schedule:
+    - cron: "17 * * * *" # every hour, at minute 17
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-fork
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository != 'shibilion/shadhiya-speaks'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Sync main with shibilion/shadhiya-speaks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh repo sync "$GITHUB_REPOSITORY" --branch main

@@ -131,8 +131,8 @@ export default async function AboutPage() {
                 className="h-44 w-full object-cover sm:h-auto sm:w-64"
               />
               <div className="p-6 sm:py-8">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">UAE Exam Supervision</p>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
+                <p className="font-mono text-base uppercase tracking-[0.2em] text-gold sm:text-xl">UAE Exam Supervision</p>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
                   Five years supervising official IELTS exam sessions — seating plans, speaking schedules, examiner
                   rubrics. Your preparation is built on what actually happens inside the test room.
                 </p>
