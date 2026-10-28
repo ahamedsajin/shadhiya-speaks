@@ -21,7 +21,7 @@ const REASONS = [
     n: "01",
     icon: BadgeCheck,
     title: "Supervision Insight",
-    text: "Real experience inside UAE IELTS exam environments — five years of supervision at Abu Dhabi University means you train with someone who has watched thousands of real test days unfold.",
+    text: "Real experience inside UAE IELTS exam environments — five years of IELTS exam supervision means you train with someone who has watched thousands of real test days unfold.",
   },
   {
     n: "02",

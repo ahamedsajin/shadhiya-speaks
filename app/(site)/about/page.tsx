@@ -82,7 +82,7 @@ export default async function AboutPage() {
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg" data-testid="about-bio">
               Shadhiya combines academic rigour with practical coaching to help students navigate both IELTS exams and
               real-world English communication. Her methodology goes beyond test mechanics to build lasting speaking
-              confidence — shaped by five years supervising real IELTS exams at Abu Dhabi University.
+              confidence — shaped by five years supervising real IELTS exams in the UAE.
             </p>
           </Reveal>
           <Reveal delay={0.55}>
@@ -132,7 +132,6 @@ export default async function AboutPage() {
               />
               <div className="p-6 sm:py-8">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">UAE Exam Supervision</p>
-                <p className="mt-2 font-heading text-xl font-medium text-obsidian">Abu Dhabi University</p>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
                   Five years supervising official IELTS exam sessions — seating plans, speaking schedules, examiner
                   rubrics. Your preparation is built on what actually happens inside the test room.

@@ -1,3 +1,4 @@
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 import { SOCIAL_ICONS, WhatsAppIcon } from "@/components/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
@@ -95,6 +96,26 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             >
               {contact.email}
             </a>
+            {contact.address && (
+              <div className="mt-8" data-testid="footer-address">
+                <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-light">Address</p>
+                <address className="mt-4 flex items-start gap-2 text-sm not-italic leading-relaxed text-[#A2B3AB]">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
+                  <span className="whitespace-pre-line">{contact.address}</span>
+                </address>
+                {contact.mapUrl && (
+                  <a
+                    href={contact.mapUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-testid="footer-directions-link"
+                    className="ml-6 mt-2 inline-block text-sm text-[#A2B3AB] underline-offset-4 transition-colors hover:text-gold-light hover:underline"
+                  >
+                    Get directions →
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

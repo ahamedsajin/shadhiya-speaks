@@ -23,7 +23,7 @@ type Errors = Record<string, string>;
 const IMAGE_SLOTS: { slot: ImageSlot; label: string; hint: string; preview: string }[] = [
   { slot: "homeHero", label: "Home page — trainer photo", hint: "The large photo in the trainer card. Portrait (4:5) works best.", preview: "h-40 w-32" },
   { slot: "about", label: "About page — trainer photo", hint: "Portrait (4:5) works best.", preview: "h-40 w-32" },
-  { slot: "aboutCampus", label: "About page — exam supervision photo", hint: "Shown next to “Abu Dhabi University”. Portrait (3:4).", preview: "h-40 w-30" },
+  { slot: "aboutCampus", label: "About page — exam supervision photo", hint: "Shown in the “UAE Exam Supervision” card. Portrait (3:4).", preview: "h-40 w-30" },
   { slot: "ielts", label: "IELTS Courses page — photo", hint: "Landscape (4:3) works best.", preview: "h-28 w-36" },
   { slot: "coaching", label: "1-to-1 Coaching page — photo", hint: "Portrait (4:5) works best.", preview: "h-40 w-32" },
 ];
@@ -208,7 +208,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
 
       <Section
         title="Contact details"
-        description="Used for every WhatsApp button, the email links, the Contact page and the footer."
+        description="Used for every WhatsApp button, the email links, the Contact page and the footer (including the address)."
       >
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="space-y-2">
@@ -253,6 +253,32 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
             Prefilled when visitors tap the general WhatsApp buttons (header, footer, floating button, Contact page).
           </p>
           <FieldError id="whatsapp-message-error" message={errors["contact.whatsappMessage"]} />
+        </div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="field-address">Address (optional)</Label>
+            <Textarea
+              id="field-address"
+              value={contact.address}
+              maxLength={300}
+              rows={3}
+              onChange={(e) => set("contact", { address: e.target.value })}
+              placeholder={"Office 12, Example Building\nAl Ain, Abu Dhabi, UAE"}
+              aria-invalid={errors["contact.address"] ? true : undefined}
+              data-testid="settings-address"
+            />
+            <p className="text-xs text-ink-muted">Shown in the footer under Connect. Leave empty to hide it.</p>
+            <FieldError id="address-error" message={errors["contact.address"]} />
+          </div>
+          <TextField
+            label="Map link (optional)"
+            value={contact.mapUrl}
+            onChange={(v) => set("contact", { mapUrl: v })}
+            error={errors["contact.mapUrl"]}
+            hint="e.g. a Google Maps link. Adds “Get directions” under the address."
+            placeholder="https://maps.app.goo.gl/…"
+            testId="settings-map-url"
+          />
         </div>
         <div>
           <p className="text-sm font-medium">Social links</p>

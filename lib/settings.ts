@@ -23,6 +23,10 @@ export type SiteSettings = {
     email: string;
     /** Empty string hides that icon. */
     socials: Record<SocialKey, string>;
+    /** Shown in the footer under Connect. Empty hides it; line breaks are kept. */
+    address: string;
+    /** Optional "Get directions" link for the address (e.g. Google Maps). */
+    mapUrl: string;
   };
   trainer: {
     name: string;
@@ -90,6 +94,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
       facebook: "https://facebook.com/shadhiyaspeaks",
       tiktok: "https://tiktok.com/@shadhiya.speaks",
     },
+    address: "",
+    mapUrl: "",
   },
   trainer: {
     name: "Shadhiya Shekkeer",
@@ -111,7 +117,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     "Band 8.0 Achievers",
     "Live 1-to-1 & Micro-Batch Classes",
     "Computer-Based Test Simulation",
-    "Abu Dhabi University Supervision",
+    "IELTS Academic & General Training",
   ],
   highlights: {
     credentials: [
@@ -211,6 +217,12 @@ export const settingsSchema = z.object({
     whatsappMessage: text("Default WhatsApp message", 300),
     email: z.string().trim().max(200).pipe(z.email("Enter a valid email address")),
     socials: z.object({ instagram: socialUrl, youtube: socialUrl, facebook: socialUrl, tiktok: socialUrl }),
+    address: z.string().trim().max(300, "Address must be 300 characters or fewer"),
+    mapUrl: z
+      .string()
+      .trim()
+      .max(500, "Link is too long")
+      .refine((v) => v === "" || HTTPS_URL.test(v), "Use a full https:// link, or leave it empty"),
   }),
   trainer: z.object({
     // Optional: an empty name or title is simply not shown on the photo.
